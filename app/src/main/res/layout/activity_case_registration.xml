@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etComplaintDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Complaint Details"
+        android:inputType="textMultiLine"
+        android:lines="5" />
+
+    <EditText
+        android:id="@+id/etIncidentDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etComplaintDetails"
+        android:layout_marginTop="16dp"
+        android:hint="Date of Incident"
+        android:inputType="date"
+        android:minHeight="48dp" />
+
+    <Button
+        android:id="@+id/btnUploadDocument"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etIncidentDate"
+        android:layout_marginTop="16dp"
+        android:text="Upload Document"
+        android:background="@drawable/button_background"
+        android:textColor="#FFFFFF" />
+
+    <!-- Add more components as needed -->
+
+</RelativeLayout>

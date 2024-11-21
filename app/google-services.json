@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "545187474388",
+    "project_id": "virtuecase-cee43",
+    "storage_bucket": "virtuecase-cee43.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545187474388:android:387ff7912cd7632b78c441",
+        "android_client_info": {
+          "package_name": "com.example.virtuecase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCDN2SY1XIEOa_dtql3RCFHIs2P97V2aw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

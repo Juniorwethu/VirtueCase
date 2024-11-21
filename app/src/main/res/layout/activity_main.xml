@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <!-- Welcome Message -->
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to VirtueCase"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/black" />
+
+    <!-- Client Login Button -->
+    <Button
+        android:id="@+id/btnClientLogin"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Client Login"
+        android:layout_below="@id/tvWelcome"
+        android:layout_marginTop="24dp" />
+
+    <!-- HR/Admin Login Button -->
+    <Button
+        android:id="@+id/btnHRLogin"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="HR/Admin Login"
+        android:layout_below="@id/btnClientLogin"
+        android:layout_marginTop="16dp" />
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/btnRegister"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:layout_below="@id/btnHRLogin"
+        android:layout_marginTop="16dp" />
+
+</RelativeLayout>
