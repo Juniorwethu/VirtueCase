@@ -1,35 +1,42 @@
 package com.example.virtuecase.ui.screens
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import com.example.virtuecase.R
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 
+// Data class for User
 data class User(
     val id: String = "",
     val name: String = "",
     val email: String = "",
-    val role: String = "",
-    val phone: String = "" // Add phone number field
+    val role: String = ""
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,9 +70,9 @@ fun ManageUsersScreen(navController: NavHostController, firestore: FirebaseFires
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Add logo at the top of the screen
+            // Add a logo at the top of the screen
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo), // Add your logo image here
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(120.dp)
@@ -97,10 +104,8 @@ fun ManageUsersScreen(navController: NavHostController, firestore: FirebaseFires
 
 @Composable
 fun UserItem(user: User, firestore: FirebaseFirestore) {
-    val context = LocalContext.current
-
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
@@ -117,32 +122,17 @@ fun UserItem(user: User, firestore: FirebaseFirestore) {
                 Text(text = "Role: ${user.role}", color = Color.Black)
             }
             Row {
-                // Edit User (currently placeholder)
                 IconButton(onClick = {
                     // Implement edit user functionality
+                    // Call a function or navigate to a new screen for editing
                 }) {
                     Icon(Icons.Filled.Edit, contentDescription = "Edit", tint = Color.Blue)
                 }
-
-                // Delete User
                 IconButton(onClick = {
+                    // Implement delete user functionality
                     deleteUserFromFirestore(firestore, user.id)
                 }) {
                     Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = Color.Red)
-                }
-
-                // Call User
-                IconButton(onClick = {
-                    callUser(context, user.phone)
-                }) {
-                    Icon(Icons.Filled.Call, contentDescription = "Call", tint = Color.Green)
-                }
-
-                // Email User
-                IconButton(onClick = {
-                    emailUser(context, user.email)
-                }) {
-                    Icon(Icons.Filled.Email, contentDescription = "Email", tint = Color.Blue)
                 }
             }
         }
@@ -157,46 +147,17 @@ suspend fun fetchUsersFromFirestore(firestore: FirebaseFirestore): List<User> {
             doc.toObject(User::class.java)?.copy(id = doc.id)
         }
     } catch (e: Exception) {
-        Log.e("FirestoreError", "Error fetching users: ${e.message}")
         emptyList()
     }
 }
 
 // Function to delete user from Firestore
 fun deleteUserFromFirestore(firestore: FirebaseFirestore, userId: String) {
-    if (userId.isNotEmpty()) {
-        firestore.collection("users").document(userId).delete()
-            .addOnSuccessListener {
-                Log.d("Firestore", "User deleted successfully")
-            }
-            .addOnFailureListener { e ->
-                Log.e("FirestoreError", "Error deleting user: ${e.message}")
-            }
-    } else {
-        Log.e("FirestoreError", "Invalid user ID")
-    }
-}
-
-// Function to call user
-fun callUser(context: Context, phoneNumber: String) {
-    if (phoneNumber.isNotEmpty()) {
-        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
-    } else {
-        Log.e("CallUserError", "Phone number is empty")
-    }
-}
-
-// Function to email user
-fun emailUser(context: Context, email: String) {
-    if (email.isNotEmpty()) {
-        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
-        intent.putExtra(Intent.EXTRA_TEXT, "Message Body Here")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
-    } else {
-        Log.e("EmailUserError", "Email is empty")
-    }
+    firestore.collection("users").document(userId).delete()
+        .addOnSuccessListener {
+            // Handle success, e.g., show a toast message or refresh the user list
+        }
+        .addOnFailureListener {
+            // Handle failure, e.g., show an error message
+        }
 }

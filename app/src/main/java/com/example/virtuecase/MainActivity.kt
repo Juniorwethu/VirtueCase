@@ -3,6 +3,7 @@ package com.example.virtuecase
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,17 +27,17 @@ class MainActivity : ComponentActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+        enableEdgeToEdge()
         setContent {
             VirtueCaseTheme {
+                // Use NavController to manage navigation
                 val navController = rememberNavController()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Pass innerPadding here directly to adjust the NavGraph content
                     NavGraph(
                         navController = navController,
                         firestore = firestore,
-                        auth = auth,
-                        innerPadding = innerPadding // Pass the padding to NavGraph
+                        auth = auth
                     )
                 }
             }
@@ -48,17 +49,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     VirtueCaseTheme {
+        // Use NavController to manage navigation
         val navController = rememberNavController()
-        val firestore = FirebaseFirestore.getInstance()  // Initialize Firestore for preview
-        val auth = FirebaseAuth.getInstance()  // Initialize FirebaseAuth for preview
 
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            // Pass the padding to NavGraph in the preview as well
             NavGraph(
                 navController = navController,
-                firestore = firestore,
-                auth = auth,
-                innerPadding = innerPadding // Pass the padding here too
+                firestore = FirebaseFirestore.getInstance(),
+                auth = FirebaseAuth.getInstance()
             )
         }
     }

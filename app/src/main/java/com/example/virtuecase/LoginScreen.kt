@@ -1,7 +1,6 @@
 package com.example.virtuecase.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.Button
@@ -31,7 +30,6 @@ fun LoginScreen(navController: NavHostController) {
     val isValidEmail = remember { mutableStateOf(true) }
     val isValidPassword = remember { mutableStateOf(true) }
 
-    // Column for the layout
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -146,29 +144,6 @@ fun LoginScreen(navController: NavHostController) {
         ) {
             Text("Sign Up")
         }
-
-        // Forgot Password Link
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Forgot Password?",
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .clickable {
-                    // Send password reset email
-                    if (email.value.isNotEmpty()) {
-                        FirebaseAuth.getInstance().sendPasswordResetEmail(email.value)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    // Notify user
-                                    loginError.value = "Password reset email sent!"
-                                } else {
-                                    loginError.value = task.exception?.message ?: "Error sending reset email."
-                                }
-                            }
-                    } else {
-                        loginError.value = "Please enter your email address to reset your password."
-                    }
-                }
-        )
     }
 }
+

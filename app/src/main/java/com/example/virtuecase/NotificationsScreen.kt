@@ -1,100 +1,102 @@
 package com.example.virtuecase.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-
-// Sample data class for a notification
-data class Notification(
-    val title: String,
-    val description: String,
-    val timestamp: String,
-    val isRead: Boolean
-)
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 @Composable
-fun NotificationsScreen(navController: NavHostController) {
-    // Sample list of notifications (replace this with real data from Firebase or a ViewModel)
-    val notifications = listOf(
-        Notification("Case Status Update", "Your case has been marked as resolved.", "2 hours ago", false),
-        Notification("New Comment on Your Case", "The investigator left a comment on your case.", "1 day ago", true),
-        Notification("Case Assigned to Investigator", "Your case has been assigned to an investigator.", "3 days ago", false)
-    )
+fun NotificationsScreen(navController: NavHostController, firestore: FirebaseFirestore) {
+    var notifications by remember { mutableStateOf(emptyList<Notification>()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    // Fetch notifications when the screen is loaded
+    LaunchedEffect(Unit) {
+        notifications = fetchNotifications(firestore)
+        isLoading = false
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
         Text("Notifications", style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // If no notifications are present, show an empty state message
-        if (notifications.isEmpty()) {
-            Text("No new notifications", style = MaterialTheme.typography.bodyLarge)
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            // LazyColumn for a scrollable list of notifications
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(notifications.size) { index ->
-                    val notification = notifications[index]
-                    NotificationItem(notification)
+            if (notifications.isEmpty()) {
+                Text("No notifications available.", style = MaterialTheme.typography.bodyMedium)
+            } else {
+                LazyColumn {
+                    items(notifications) { notification ->
+                        NotificationItem(notification) {
+                            // Navigate to details screen or handle notification click
+                        }
+                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // "Clear All" Button - You can implement the logic to clear notifications here
-        Button(onClick = { /* Add clear all functionality */ }) {
-            Text("Clear All")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Back button to navigate to the previous screen
+        // Back button
         Button(onClick = { navController.popBackStack() }) {
             Text("Back to Home")
         }
     }
 }
 
-@Composable
-fun NotificationItem(notification: Notification) {
-    // Notification item UI with conditional formatting based on read/unread status
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp)
-            .let {
-                if (notification.isRead) it else it.padding(8.dp) // Apply different padding or styles for unread
-            }
-    ) {
-        Text(
-            text = notification.title,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        Text(
-            text = notification.description,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = notification.timestamp,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+// Function to fetch notifications from Firestore
+suspend fun fetchNotifications(firestore: FirebaseFirestore): List<Notification> {
+    return try {
+        val snapshot = firestore.collection("notifications").get().await()
+        snapshot.documents.mapNotNull { it.toObject(Notification::class.java) }
+    } catch (e: Exception) {
+        emptyList()
     }
 }
+
+// Data class to represent a Notification
+data class Notification(
+    val title: String = "",
+    val message: String = "",
+    val timestamp: Long = System.currentTimeMillis()
+)
+
+// Composable function to display a single notification item
+@Composable
+fun NotificationItem(notification: Notification, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable(onClick = onClick), // Handle click
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = notification.title, style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = notification.message, style = MaterialTheme.typography.bodySmall)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "Received on: ${notification.timestamp}", style = MaterialTheme.typography.bodySmall)
+        }
+    }
+}
+

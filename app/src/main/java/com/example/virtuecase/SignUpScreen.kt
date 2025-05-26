@@ -218,4 +218,7 @@ fun SignUpScreen(navController: NavHostController) {
             Text("Back to Login")
         }
     }
-} 
+}
+
+
+

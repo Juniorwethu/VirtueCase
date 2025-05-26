@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services") version "4.4.2" // Updated Google Services plugin
+    id("com.google.gms.google-services") version "4.4.2" // Apply Google Services plugin
 }
 
 android {
@@ -32,12 +32,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17 // Use Java 17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "17" // Use JVM target 17 for Kotlin
     }
 
     buildFeatures {
@@ -45,7 +45,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.1" // Ensure this matches your Compose version
     }
 
     packaging {
@@ -57,48 +57,44 @@ android {
 
 dependencies {
     // Core Android dependencies
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation(libs.androidx.core.ktx.v1120)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v262)
+    implementation(libs.androidx.activity.compose.v172)
 
     // Jetpack Compose dependencies
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+    implementation(platform(libs.androidx.compose.bom.v20240100))
+    implementation(libs.ui)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3)
+
+    //Material 3
+    implementation(libs.material.v190)
 
     // Firebase dependencies
-    implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
 
-    // Image loading library (Coil for Compose)
-    implementation("io.coil-kt:coil-compose:2.3.0")
-
-    // Navigation for Compose
-    implementation("androidx.navigation:navigation-compose:2.7.2")
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
 
     // Additional dependencies
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(libs.androidx.appcompat.v161)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.storage.ktx)
 
     // Unit testing dependencies
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(libs.junit)
 
     // Android UI testing dependencies
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
+    androidTestImplementation(libs.androidx.junit.v115)
+    androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(libs.ui.test.junit4)
 
     // Debugging tools for Jetpack Compose
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // Glide image loading library (optional, if using Landscapist for Glide)
-    implementation("com.github.skydoves:landscapist-glide:1.2.2")
-
-    // Material 3 (Ensure compatibility with Compose)
-    implementation("com.google.android.material:material:1.9.0")
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
 }
+
+// Apply Google Services plugin at the end
+apply(plugin = "com.google.gms.google-services")
